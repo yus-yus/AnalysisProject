@@ -1,13 +1,16 @@
-# クラスタの寿命（存続ステップ数）をラベルごとに集計・可視化
-	
 import matplotlib.pyplot as plt
 from collections import defaultdict
 
 from modules.timeseries import analyze_timeseries
 from utils.common_utils import get_sorted_output_xml_files
 
-# クラスタの寿命（存続ステップ数）をラベルごとに集計・可視化
+
 def plot_cluster_lifespan(step_clusters_with_global_ids):
+    """クラスタの寿命（存続ステップ数）をラベルごとに集計・可視化
+
+    Args:
+        step_clusters_with_global_ids (dict): {step: DataFrame}, 各DataFrameに 'global_cluster_ID' 列がある前提
+    """
     # クラスタごとに出現ステップを記録
     cluster_lifespan = defaultdict(list)  # {label: [lifespan, ...]}
     cluster_steps = defaultdict(lambda: defaultdict(list))  # {label: {gid: [step, ...]}}
@@ -36,7 +39,7 @@ def plot_cluster_lifespan(step_clusters_with_global_ids):
     plt.tight_layout()
     plt.show()
 
-# 使い方例（cluster_dynamics.pyのmain部分を参考）
+
 if __name__ == "__main__":
     # 出力XMLファイルのリストを取得
     dir_path = input("解析対象のoutput.xmlがあるディレクトリパスを入力してください: ").strip()
@@ -52,4 +55,6 @@ if __name__ == "__main__":
         exit(1)
 
     step_clusters_with_global_ids = analyze_timeseries(output_xml_list, step_interval)
+
+    # 結果のplot
     plot_cluster_lifespan(step_clusters_with_global_ids)
