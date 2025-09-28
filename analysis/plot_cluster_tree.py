@@ -1,5 +1,3 @@
-# クラスターの時系列変化をツリー構造で可視化
-
 import networkx as nx
 from matplotlib.patches import Patch
 import matplotlib.pyplot as plt
@@ -8,10 +6,10 @@ from modules.timeseries import analyze_timeseries
 from utils.common_utils import get_sorted_output_xml_files, build_cluster_graph_from_global_ids, get_ancestor_nodes
 
 def visualize_cluster_graph(G):
-    """
-    クラスタ時系列グラフを可視化
-    G: networkx.DiGraph
-    ノード属性: size, label, fibro, macro, cap
+    """クラスタ時系列グラフを可視化
+
+    Args:
+        G (networkx.DiGraph): 可視化対象のグラフ
     """
 
 
@@ -64,6 +62,7 @@ def visualize_cluster_graph(G):
     plt.tight_layout()
     plt.show()
 
+
 if __name__ == "__main__":
     # 出力XMLファイルのリストを取得
     dir_path = input("解析対象のoutput.xmlがあるディレクトリパスを入力してください: ").strip()
@@ -82,18 +81,10 @@ if __name__ == "__main__":
     step_clusters_with_global_ids = analyze_timeseries(output_xml_list, step_interval)
     G = build_cluster_graph_from_global_ids(step_clusters_with_global_ids, step_interval=1)
 
-    print("=== Step List ===")
-    print(sorted(step_clusters_with_global_ids.keys()))
-
-    print("=== Global Cluster ID Presence ===")
-    for step, df in step_clusters_with_global_ids.items():
-        if df["global_cluster_ID"].isnull().any():
-            print(f"[Warning] Null global_cluster_ID at step {step}")
-
-    # === 全クラスタ描画 ===
+    # グラフを可視化
     visualize_cluster_graph(G)
 
-    # === 再描画オプション: サイズ上位クラスタの祖先のみ ===
+    # 再描画する上位クラスタ数を入力
     try:
         top_n = int(input("再描画する上位クラスタ数（最終ステップのサイズ順）を入力してください（例: 5）: "))
         if top_n < 1:
@@ -113,7 +104,7 @@ if __name__ == "__main__":
     # サブグラフを作成
     G_sub = G.subgraph(ancestor_nodes).copy()
 
-    print(f"[Subgraph] Nodes: {G_sub.number_of_nodes()}, Edges: {G_sub.number_of_edges()}")
+    # サブグラフを可視化
     visualize_cluster_graph(G_sub)
 
  
