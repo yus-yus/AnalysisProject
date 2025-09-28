@@ -5,10 +5,11 @@ from modules.timeseries import analyze_timeseries
 from utils.common_utils import build_step_to_time, get_sorted_output_xml_files
 
 def plot_cell_count_timecourse(step_clusters_with_global_ids, step_to_time):
-	"""
-	クラスタごとの細胞数の時系列を可視化
-	step_clusters_with_global_ids: {step: DataFrame}, 各DataFrameに 'label' と 'cell_counts' 列がある前提
-	step_to_time: {step: 時間値}
+	"""細胞数の時系列をプロット
+
+	Args:
+		step_clusters_with_global_ids (dict): {step: DataFrame}, 各DataFrameに 'label' と 'cell_counts' 列がある前提
+		step_to_time (dict): {step: 時間値}
 	"""
 	label_to_timecourse = defaultdict(list)
 	steps = sorted(step_clusters_with_global_ids.keys())
@@ -55,6 +56,5 @@ if __name__ == "__main__":
     step_clusters_with_global_ids = analyze_timeseries(output_xml_list, step_interval) 
     step_to_time = build_step_to_time(output_xml_list, dir_path)
 
-    # print(step_to_time)
-
+	# 結果のplot
     plot_cell_count_timecourse(step_clusters_with_global_ids, step_to_time)  
