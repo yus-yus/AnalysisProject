@@ -9,22 +9,48 @@ import re
 from collections import defaultdict
 import pandas as pd
 
-# 設定ファイルを読み込むユーティリティ関数
+
 def load_config(config_ini_path):
+    """設定ファイルを読み込む
+
+    Args:
+        config_ini_path (str): 設定ファイルのパス
+
+    Returns:
+        ConfigParser: 設定情報を含むConfigParser
+    """
     config = configparser.ConfigParser()
     config.read(config_ini_path, encoding='utf-8')
+
     return config
 
-# セルデータの読み込み
+
 def load_cell_dataframe(xml_path):
+    """XMLファイルから細胞データを読み込む
+
+    Args:
+        xml_path (str): XMLファイルのパス
+
+    Returns:
+        DataFrame: 細胞データを含むDataFrame
+    """
     final_xml_path = Path(xml_path)
     df_cell = pcdl.TimeStep(final_xml_path.as_posix(), physiboss=False, verbose=False, microenv=False).get_cell_df()
     df_cell["status"] = "noise"
     df_cell = df_cell.reset_index()
+
     return df_cell
 
-# svgファイルから時間情報を抽出する関数
+
 def extract_time_from_svg(svg_path):
+    """SVGファイルから時間情報を抽出する関数
+
+    Args:
+        svg_path (str): SVGファイルのパス
+
+    Returns:
+        float: 抽出した時間情報（時間(hour)単位）
+    """
     try:
         with open(svg_path, "r", encoding="utf-8") as f:
             text = f.read()
@@ -53,13 +79,16 @@ def extract_time_from_svg(svg_path):
 
     return None
 
-# SVGファイルから時間情報を抽出し、step_to_time辞書を作成する関数
+
 def build_step_to_time(xml_files, output_dir):
-    """
-    xml_files: List[Path] - output*.xmlファイルのリスト
-    output_dir: str or Path - snapshot*.svgがあるディレクトリ
-    extract_time_from_svg: 関数(svg_path) -> float or None
-    return: {step_index: time_val}
+    """XMLファイルから時間情報を抽出し、ステップごとの時間辞書を作成する関数
+
+    Args:
+        xml_files (List[Path]): output*.xmlファイルのリスト
+        output_dir (str or Path): snapshot*.svgがあるディレクトリ
+
+    Returns:
+        dict: ステップごとの時間情報を含む辞書
     """
     step_to_time = {}
     for step_index, xml_path in enumerate(xml_files):
@@ -70,10 +99,19 @@ def build_step_to_time(xml_files, output_dir):
             step_to_time[step_index] = time_val
         else:
             print(f"[Warning] SVGから時間抽出できず: {svg_path}")
+
     return step_to_time
 
-# outputXXXX.xml ファイルをステップ順に取得
+
 def get_sorted_output_xml_files(target_dir_path):
+    """指定されたディレクトリ内のoutput*.xmlファイルをステップ順に取得する関数
+
+    Args:
+        target_dir_path (str or Path): 対象ディレクトリのパス
+
+    Returns:
+        list: ステップ順にソートされたoutput*.xmlファイルのリスト
+    """
     target_dir = Path(target_dir_path)
     xml_files = list(target_dir.glob("*.xml"))
     numbered_files = []
@@ -85,10 +123,19 @@ def get_sorted_output_xml_files(target_dir_path):
             numbered_files.append((num, f))
 
     numbered_files.sort(key=lambda x: x[0])
+
     return [f for _, f in numbered_files]
 
-# 各ステップのDataFrameを辞書形式で取得
+
 def extract_clusters_per_step(df_by_step):
+    """各ステップのクラスタ情報を抽出する関数
+
+    Args:
+        df_by_step (dict): ステップごとのDataFrameを含む辞書   
+
+    Returns:
+        dict: 各ステップのクラスタ情報を含む辞書
+    """
     step_clusters = {}
     for step, df in df_by_step.items():
         clustered = df[df["new_cluster"] != -1]
@@ -127,8 +174,16 @@ def extract_clusters_per_step(df_by_step):
     return step_clusters
 
 
-# エッジベースでグローバルクラスタIDを割当て
 def assign_global_cluster_ids_edge_based(step_clusters, iou_threshold=0.1):
+    """エッジベースでグローバルクラスタIDを割当てる関数
+
+    Args:
+        step_clusters (dict): ステップごとのクラスタ情報を含む辞書
+        iou_threshold (float, optional): IoUの閾値. Defaults to 0.1.
+
+    Returns:
+        dict: グローバルクラスタIDのマッピングを含む辞書
+    """
     global_id_counter = 0
     global_clusters = defaultdict(dict)
     prev_clusters = None
@@ -215,10 +270,20 @@ def assign_global_cluster_ids_edge_based(step_clusters, iou_threshold=0.1):
     # 最後に各stepのDataFrameにglobal_cluster_ID列を追加
     for step, df in step_clusters.items():
         df["global_cluster_ID"] = df["cluster_ID"].map(global_clusters[step])
+
     return step_clusters
 
-# グローバルクラスタIDベースでクラスタ時系列グラフを構築
+
 def build_cluster_graph_from_global_ids(step_clusters, step_interval=1):
+    """グローバルクラスタIDに基づいてクラスタ時系列グラフを構築する関数
+
+    Args:
+        step_clusters (dict): ステップごとのクラスタ情報を含む辞書
+        step_interval (int, optional): ステップ間のインターバル. Defaults to 1.
+
+    Returns:
+        nx.DiGraph: 構築されたクラスタ時系列グラフ
+    """
     G = nx.DiGraph()
     steps = sorted(step_clusters.keys())
 
@@ -232,8 +297,6 @@ def build_cluster_graph_from_global_ids(step_clusters, step_interval=1):
                         fibro=row["fibroblast_count"],
                         macro=row["macrophage_count"],
                         cap=row["capillary_count"])
-
-
 
     for i in range(len(steps) - step_interval):
         step = steps[i]
@@ -255,7 +318,17 @@ def build_cluster_graph_from_global_ids(step_clusters, step_interval=1):
     print(f"[build_cluster_graph_from_global_ids] Nodes: {G.number_of_nodes()}, Edges: {G.number_of_edges()}")
     return G
 
+
 def get_ancestor_nodes(G, target_nodes):
+    """指定されたノードの祖先ノードを取得する関数
+
+    Args:
+        G (nx.DiGraph): クラスタ時系列グラフ
+        target_nodes (list): 祖先を取得したいノードのリスト
+
+    Returns:
+        set: 祖先ノードの集合
+    """
     visited = set()
     queue = list(target_nodes)
 
