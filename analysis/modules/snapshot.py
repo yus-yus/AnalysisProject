@@ -1,16 +1,15 @@
-# 1スナップショットの解析メインスクリプト
 import os
 
 from utils.common_utils import load_config, load_cell_dataframe
 from utils.clustering_utils import calculate_neighbors, cluster_cells, label_clusters, merge_clusters, count_capillaries
 
 
-def analyze_snapshot(xml_path, config_ini_path=None):
+def analyze_snapshot(xml_path, config_ini_path):
     """スナップショットを解析する関数
 
     Args:
         xml_path (str): XMLファイルのパス
-        config_ini_path (str, optional): 設定ファイルのパス. Defaults to None.
+        config_ini_path (str): 設定ファイルのパス
 
     Returns:
         DataFrame: 解析結果を含むDataFrame
@@ -20,7 +19,7 @@ def analyze_snapshot(xml_path, config_ini_path=None):
         config_ini_path = os.path.join(os.path.dirname(__file__), "..", "config", "config_analysis.ini")
         config_ini_path = os.path.abspath(config_ini_path)
     config = load_config(config_ini_path)
-    
+
     df_cell = load_cell_dataframe(xml_path)
     df_cell = calculate_neighbors(df_cell, config)
     df_cell = cluster_cells(df_cell, config)

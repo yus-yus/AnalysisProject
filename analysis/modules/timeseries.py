@@ -1,4 +1,3 @@
-# 時系列解析メインスクリプト
 from utils.common_utils import extract_clusters_per_step, assign_global_cluster_ids_edge_based
 from modules.snapshot import analyze_snapshot
 
@@ -7,8 +6,8 @@ def analyze_timeseries(output_xml_list, step_interval=1):
     """時系列データを解析する関数
 
     Args:
-        output_xml_list (_type_): _description_
-        step_interval (int, optional): _description_. Defaults to 1.
+        output_xml_list (list): XMLファイルのパスのリスト
+        step_interval (int): ステップ間隔. デフォルトでは1.
 
     Returns:
         dict: {step: DataFrame}, 各DataFrameに 'global_cluster_ID' 列が追加されている
