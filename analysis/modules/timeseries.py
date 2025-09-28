@@ -4,6 +4,15 @@ from modules.snapshot import analyze_snapshot
 
 
 def analyze_timeseries(output_xml_list, step_interval=1):
+    """時系列データを解析する関数
+
+    Args:
+        output_xml_list (_type_): _description_
+        step_interval (int, optional): _description_. Defaults to 1.
+
+    Returns:
+        dict: {step: DataFrame}, 各DataFrameに 'global_cluster_ID' 列が追加されている
+    """
     df_by_step = {}
     for i, f in enumerate(range(len(output_xml_list))):
         if i % step_interval != 0:
