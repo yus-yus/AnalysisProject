@@ -46,6 +46,8 @@ python analysis/plot_snapshot.py
 - プロンプトに従い、解析結果フォルダを入力してください（例: `C:\Users\user\sim_results\run1`）。
 - 描画したいXMLファイル名（未入力なら `final.xml`）を入力してください。
 
+![例：クラスタリング前後のスナップショット](examples/plot_snapshot_example.png)
+
 #### 細胞数の時系列プロット
 
 ```sh
@@ -53,19 +55,30 @@ python analysis/plot_cell_count.py
 ```
 - 解析対象ディレクトリとステップ間隔を入力してください。
 
+![例：細胞数の時系列グラフ](examples/plot_cell_count_example.png)
+
 #### クラスタ寿命の可視化
 
 ```sh
 python analysis/plot_cluster_lifespan.py
 ```
+- 解析対象ディレクトリとステップ間隔を入力してください。
+
+![クラスタ寿命のボックスプロット例](examples/plot_cluster_lifespan_example.png)
 
 ---
 
-## 出力例
+#### クラスターの時系列変化をツリーグラフで可視化
 
-- クラスタリング前後の細胞分布を並べて可視化した画像
-- 細胞数やクラスタ寿命の時系列グラフ
-- クラスタツリー構造の可視化
+```sh
+python analysis/plot_cluster_tree.py
+```
+- 解析対象ディレクトリとステップ間隔を入力してください。
+
+![例：クラスターの時系列変化のツリーグラフ](examples/plot_cluster_tree_example.png)
+
+---
+
 
 
 ---
