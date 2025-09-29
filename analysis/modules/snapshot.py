@@ -29,6 +29,6 @@ def analyze_snapshot(xml_path, config_ini_path=None):
 
     # 必要なカラムだけ返す
     return df_cell[[
-        "ID", "position_x", "position_y", "status", "dead", "new_cluster",
+        "ID", "cell_type", "position_x", "position_y", "status", "dead", "new_cluster",
         "fibroblast_count", "macrophage_count", "capillary_count_new"
     ]]
