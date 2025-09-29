@@ -19,6 +19,8 @@ def plot_cluster_lifespan(step_clusters_with_global_ids):
         for _, row in df.iterrows():
             gid = row['global_cluster_ID']
             label = row['label']
+            if label == "unknown":
+                continue  # unknown labelはスキップ
             cluster_steps[label][gid].append(step)
 
     for label, gid_dict in cluster_steps.items():
