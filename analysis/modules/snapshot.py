@@ -4,7 +4,7 @@ from utils.common_utils import load_config, load_cell_dataframe
 from utils.clustering_utils import calculate_neighbors, cluster_cells, label_clusters, merge_clusters, count_capillaries
 
 
-def analyze_snapshot(xml_path, config_ini_path):
+def analyze_snapshot(xml_path, config_ini_path=None):
     """スナップショットを解析する関数
 
     Args:
