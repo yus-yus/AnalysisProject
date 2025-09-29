@@ -19,7 +19,7 @@ AnalysisProject/
 │   ├── plot_cluster_lifespan.py
 │   ├── plot_cluster_tree.py
 │   ├── plot_snapshot.py
-├── examples/            # サンプルデータや出力例（任意）
+├── examples/            # 出力例
 ├── requirements.txt     # 必要なPythonパッケージ
 ├── README.md            # このファイル
 ```
@@ -43,7 +43,7 @@ pip install -r requirements.txt
 ```sh
 python analysis/plot_snapshot.py
 ```
-- プロンプトに従い、解析結果フォルダを入力してください（例: `C:\Users\user\sim_results\run1`）。
+- プロンプトに従い、解析対象ディレクトリを入力してください。
 - 描画したいXMLファイル名（未入力なら `final.xml`）を入力してください。
 
 ![例：クラスタリング前後のスナップショット](examples/plot_snapshot_example.png)
