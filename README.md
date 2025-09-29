@@ -67,7 +67,6 @@ python analysis/plot_cluster_lifespan.py
 - 細胞数やクラスタ寿命の時系列グラフ
 - クラスタツリー構造の可視化
 
-（例：`examples/` フォルダや `results/` フォルダに画像ファイルが保存されます）
 
 ---
 
