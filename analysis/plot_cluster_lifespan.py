@@ -43,7 +43,7 @@ def plot_cluster_lifespan(step_clusters_with_global_ids, step_to_time=None):
     plt.boxplot(data, labels=labels, patch_artist=True)
     plt.title('Cluster Lifespan by Label')
     plt.xlabel('Label')
-    plt.ylabel('Lifespan (steps)')
+    plt.ylabel('Lifespan (times)')
     plt.grid(True)
     plt.tight_layout()
     plt.show()
